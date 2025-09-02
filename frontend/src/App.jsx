@@ -404,20 +404,44 @@ const shouldUpdateDetections = (newDetections, currentDetections) => {
 
         {/* Model selection dropdown */}
         <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto justify-center">
-          <label htmlFor="model-select" className="text-green-300 text-xs sm:text-sm whitespace-nowrap">
+          <label htmlFor="model-select" className="text-green-300 text-xs sm:text-sm whitespace-nowrap font-bold tracking-widest drop-shadow-glow">
             Model:
           </label>
-          <select
-            id="model-select"
-            value={currentModel}
-            onChange={(e) => handleModelChange(e.target.value)}
-            className="bg-green-900 text-green-300 border border-green-400 p-1 sm:p-2 rounded hover:bg-green-800 transition-all cursor-pointer px-2 text-xs sm:text-sm w-full sm:w-auto"
-          >
-            <option value="best">Initial Model</option>
-            <option value="yolov8n">YOLOv8 Nano</option>
-            <option value="final">Final Model</option>
-            {/* Add more options as needed */}
-          </select>
+          <div className="relative w-full sm:w-auto">
+            <select
+              id="model-select"
+              value={currentModel}
+              onChange={(e) => handleModelChange(e.target.value)}
+              className="bg-gradient-to-br from-green-900 via-black to-green-950 text-green-300 border-2 border-green-400 focus:border-green-500 focus:ring-2 focus:ring-green-400 p-2 rounded-xl shadow-lg hover:bg-green-800 transition-all cursor-pointer px-4 text-xs sm:text-sm w-full sm:w-auto sci-fi-select font-mono tracking-wide outline-none"
+              style={{ boxShadow: '0 0 12px 2px #22c55e88, 0 0 0 2px #22c55e44' }}
+            >
+              <option value="best" className="bg-black text-green-400">Initial Model</option>
+              <option value="yolov8n" className="bg-black text-green-400">YOLOv8 Nano</option>
+              <option value="final" className="bg-black text-green-400">Final Model</option>
+              {/* Add more options as needed */}
+            </select>
+            <span className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-green-400 text-lg animate-pulse">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sci-fi-arrow">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
+          </div>
+          <style>{`
+            .drop-shadow-glow {
+              text-shadow: 0 0 8px #22c55e, 0 0 2px #22c55e;
+            }
+            .sci-fi-select:focus {
+              box-shadow: 0 0 16px 4px #22c55e99, 0 0 0 2px #22c55e66;
+              border-color: #22c55e;
+            }
+            .sci-fi-arrow {
+              filter: drop-shadow(0 0 6px #22c55e);
+              transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+            }
+            .sci-fi-select:focus + .sci-fi-arrow {
+              transform: translateY(-2px) scale(1.2);
+            }
+          `}</style>
         </div>
       </div>
       
