@@ -26,6 +26,9 @@ function App() {
     nonCompliantItems: []
   });
 
+  const [detectionHistory, setDetectionHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+
   // References to DOM elements: canvas for drawing, img for size measurement
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
@@ -321,7 +324,7 @@ const stopIPCamera = () => {
           const lognNow = Date.now();
           if (logNow - lastWebcamLogTime.current > WEB_CAM_LOG_INTERVAL) {
             logComplianceResults(data, "Webcam");
-            lastWebcamLogTime.current = logNow;
+            lastWebcamLogTime.current = lognNow;
           }
         }
       } catch (err) {
@@ -386,6 +389,21 @@ const shouldUpdateDetections = (newDetections, currentDetections) => {
     console.error("Model switch error:", err);
   }
 };
+
+  const handleShowHistory = () => setShowHistory(true);
+  const handleCloseHistory = () => setShowHistory(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (detections && detections.length > 0) {
+        setDetectionHistory((prev) => [
+          ...prev,
+          { timestamp: new Date().toLocaleTimeString(), detections: JSON.parse(JSON.stringify(detections)) }
+        ]);
+      }
+    }, 10000); // every 10 seconds
+    return () => clearInterval(interval);
+  }, [detections]);
 
   return (
     <div className="p-0">
@@ -489,7 +507,7 @@ const shouldUpdateDetections = (newDetections, currentDetections) => {
         <StatusPanel currentModel={currentModel}/>
 
         {/* === PANEL 6: Settings & Export (Bottom Right) === */}
-        <ActionsPanel/>
+        <ActionsPanel onShowHistory={handleShowHistory}/>
 
         <ModelPanel 
           currentModel={currentModel}
@@ -497,6 +515,31 @@ const shouldUpdateDetections = (newDetections, currentDetections) => {
         />
 
       </div>
+
+      {showHistory && (
+  <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div className="bg-green-950 border border-green-500 rounded-xl p-6 max-w-lg w-full shadow-2xl relative">
+      <button className="absolute top-2 right-2 text-green-400 hover:text-green-200 text-xl" onClick={handleCloseHistory}>×</button>
+      <h2 className="text-green-300 font-bold text-lg mb-4 text-center">Detection History</h2>
+      <div className="max-h-96 overflow-y-auto flex flex-col gap-3">
+        {detectionHistory.length === 0 ? (
+          <div className="text-green-400 text-center">No history yet.</div>
+        ) : (
+          detectionHistory.map((entry, idx) => (
+            <div key={idx} className="bg-black border border-green-600 rounded p-3 text-xs text-green-200">
+              <div className="mb-1 text-green-400 font-bold">{entry.timestamp}</div>
+              {entry.detections.map((det, i) => (
+                <div key={i} className="mb-1">
+                  <span className="font-bold">{det.class}</span> - Confidence: {(det.confidence * 100).toFixed(1)}%
+                </div>
+              ))}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
