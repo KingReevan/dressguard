@@ -545,3 +545,5 @@ const shouldUpdateDetections = (newDetections, currentDetections) => {
 }
 
 export default App;
+
+
