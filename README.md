@@ -33,3 +33,6 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 8) Inside that env put: VITE_API_BASE=http://localhost:8000
 9) If you're accessing the frontend through network ID, then you will need permission to use the webcam or the website may be deemed insecure by the browser. In order to resolve this issue, go to chrome://flags or anybrowserName://flags. Then type insecure and under 'insecure origins treated as secure', put the network address, eg: http://10.255.90.103:5173 and then click enable. Done.
 
+
+10) To run the backend: uvicorn main:app --reload
+11) To run the fronend: npm run dev
